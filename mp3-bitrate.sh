@@ -48,7 +48,7 @@ IFS=$'\n'
 # List files
 #for file in $(ls -AR $path*); do
 for file in $(find $path*); do
-	if [[ $file =~ \.mp3$ || $file =~ \.MP3$ ]]; then
+	if [[ ( ! -d "$file" ) && ( $file =~ \.mp3$ || $file =~ \.MP3$ ) ]]; then
 		filebitrate=$(mp3info -x $file 2> /dev/null | grep Audio: | cut -d, -f2 | cut -dk -f1 | tr -d '[:space:]')
 		if [[ -z "$filebitrate" ]]; then
 			(>&2 echo "BITRATE ERROR (\"$filebitrate\"): $file")
