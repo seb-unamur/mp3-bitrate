@@ -54,7 +54,8 @@ for file in $(find $path*); do
 		# If file size is null
 		if [[ ! -s $file ]]; then
 			if [[ "$deletenullsize" == 1  ]]; then
-				rm -v "$file"
+				(>&2 echo "EMPTY FILE DELETED: $file")
+				rm "$file"
 			fi
 		
 		# If file size is not null	
