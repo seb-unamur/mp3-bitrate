@@ -22,6 +22,7 @@
 ##### DEFAULT SETTINGS
 bitrate=44
 path="$(pwd)/"
+deletenullsize=1
 
 ##### MISSING ARGUMENTS
 # Missing path
@@ -46,15 +47,29 @@ IFS=$'\n'
 
 ##### PROCESS: FILES LISTING
 # List files
-#for file in $(ls -AR $path*); do
 for file in $(find $path*); do
-	if [[ ( ! -d "$file" ) && ( $file =~ \.mp3$ || $file =~ \.MP3$ ) ]]; then
-		filebitrate=$(mp3info -x $file 2> /dev/null | grep Audio: | cut -d, -f2 | cut -dk -f1 | tr -d '[:space:]')
-		if [[ -z "$filebitrate" ]]; then
-			(>&2 echo "BITRATE ERROR (\"$filebitrate\"): $file")
+	# Only process files ending with .mp3 or .MP3
+	if [[ ( ! -d "$file" ) && ( "$file" =~ \.mp3$ || "$file" =~ \.MP3$ ) ]]; then
+		
+		# If file size is null
+		if [[ ! -s $file ]]; then
+			if [[ "$deletenullsize" == 1  ]]; then
+				rm -v "$file"
+			fi
+		
+		# If file size is not null	
 		else
-			if [[ "$filebitrate" -lt "$bitrate" ]]; then
-				echo ">>> ($filebitrate kHz): $file"
+			filebitrate=$(mp3info -x "$file" 2> /dev/null | grep Audio: | cut -d, -f2 | cut -dk -f1 | tr -d '[:space:]')
+			
+			# If no bitrate has been parsed
+			if [[ -z "$filebitrate" ]]; then
+				(>&2 echo "BITRATE ERROR (\"$filebitrate\"): $file")
+			
+			# If bitrate has been parsed
+			else
+				if [[ "$filebitrate" -lt "$bitrate" ]]; then
+					echo ">>> ($filebitrate kHz): $file"
+				fi
 			fi
 		fi
 	fi
