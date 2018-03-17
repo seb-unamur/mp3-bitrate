@@ -50,10 +50,12 @@ IFS=$'\n'
 for file in $(find $path*); do
 	if [[ $file =~ \.mp3$ || $file =~ \.MP3$ ]]; then
 		filebitrate=$(mp3info -x $file 2> /dev/null | grep Audio: | cut -d, -f2 | cut -dk -f1 | tr -d '[:space:]')
-		if [[ ( ! -z "$filebitrate" ) && ( "$filebitrate" -lt "$bitrate" ) ]]; then
-			echo ">>> ($filebitrate kHz): $file"
-		else
+		if [[ -z "$filebitrate" ]]; then
 			(>&2 echo "BITRATE ERROR (\"$filebitrate\"): $file")
+		else
+			if [[ "$filebitrate" -lt "$bitrate" ]]; then
+				echo ">>> ($filebitrate kHz): $file"
+			fi
 		fi
 	fi
 done
