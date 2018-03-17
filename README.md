@@ -29,3 +29,10 @@ Run script as follows:
 ```
 ./mp3-bitrate <path> <min.bitrate>
 ```
+
+### Example
+
+List low quality (\<44kHz) files in a text file; and error messages in the terminal
+```
+./mp3-bitrate /media/NAS/Music/ > out.txt
+```
