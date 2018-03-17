@@ -20,7 +20,7 @@
 
 
 ##### DEFAULT SETTINGS
-bitrate=320
+bitrate=44
 path="$(pwd)/"
 
 ##### MISSING ARGUMENTS
@@ -35,8 +35,9 @@ fi
 
 ##### SETTINGS IN USE
 echo "Search path   : $path"
-echo "Search bitrate: $bitrate kbps"
-echo
+echo "Search bitrate: < $bitrate kHz"
+echo "========================================================================"
+echo "Please wait while recursive search ..."
 
 ##### PROCESS: INITIALIZATION
 # Prepare files listing
@@ -45,15 +46,18 @@ IFS=$'\n'
 
 ##### PROCESS: FILES LISTING
 # List files
-for file in $(ls -AR $path*); do
-	#if [[ $file =~ \.mp3$ ]]; then
+#for file in $(ls -AR $path*); do
+for file in $(find $path*); do
 	if [[ $file =~ \.mp3$ || $file =~ \.MP3$ ]]; then
-		filebitrate=$(mp3info -x $file | head -n 7 | tail -n 1 | cut -b 14-16)
-		if [[ $filebitrate -lt $bitrate  ]]; then
-			echo ">>> ($filebitrate < $bitrate kbps): $file"
+		filebitrate=$(mp3info -x $file 2> /dev/null | grep Audio: | cut -d, -f2 | cut -dk -f1 | tr -d '[:space:]')
+		if [[ ( ! -z "$filebitrate" ) && ( "$filebitrate" -lt "$bitrate" ) ]]; then
+			echo ">>> ($filebitrate kHz): $file"
+		else
+			(>&2 echo "BITRATE ERROR (\"$filebitrate\"): $file")
 		fi
 	fi
 done
+echo
 
 ##### PROCESS: CLEAN UP
 # Resume files listing
