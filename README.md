@@ -21,5 +21,5 @@ $ chmod 755 mp3-bitrate
 
 Run script as follows:
 ```
-./mp3-bitrate \<path\> \<min.bitrate\>
+./mp3-bitrate <path> <min.bitrate>
 ```
