@@ -7,6 +7,8 @@ When ommited:
 - \<path\> is the current directory;
 - \<bitrate\> is 44kHz.
 
+Delete empty files (file size = 0).
+
 ## Requirements
 Requires "mp3info".
 
