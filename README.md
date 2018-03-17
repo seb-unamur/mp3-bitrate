@@ -9,8 +9,8 @@ Requires "mp3info".
 On a Debian system:
 '''
 $ su
-# apt install mp3info
-# exit
+\# apt install mp3info
+\# exit
 '''
 
 ## Usage
