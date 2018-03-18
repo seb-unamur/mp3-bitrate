@@ -20,9 +20,12 @@
 
 
 ##### DEFAULT SETTINGS
-bitrate=44
-path="$(pwd)/"
-deletenullsize=1
+bitrate=44		# Default bitrate when argument is missing
+deletenullsize=1	# When set, empty files are automatically removed
+deletelowbitrate=0	# When set, lowquality files are automatically removed
+
+# /!\ DO NOT CHANGE WHAT FOLLOWS UNLESS YOU KNOW WHAT YOU ARE DOING /!\
+path="$(pwd)/"		# Default path when argument is missing
 
 ##### MISSING ARGUMENTS
 # Missing path
@@ -69,11 +72,17 @@ for file in $(find $path*); do
 			# If bitrate has been parsed
 			else
 				if [[ "$filebitrate" -lt "$bitrate" ]]; then
-					echo ">>> ($filebitrate kHz): $file"
+					echo ">>> LOW QUALITY FILE FOUND ($filebitrate kHz): $file"
+					if [[ "$deletelowbitrate" == 1 ]]; then
+						rm $file
+					else
+						rm -i $file
+					fi
 				fi
 			fi
 		fi
 	fi
+	echo
 done
 echo
 
